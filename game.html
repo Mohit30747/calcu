@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tic tac game</title>
+</head>
+<style>
+*{
+    margin: 0;
+    padding: 0;
+}
+body{
+    /* background-color: rgb(96, 91, 91); */
+    text-align: center;
+
+}
+h1{
+    background:linear-gradient(45deg,orange,skyblue,pink);
+    color:rgb(3, 3, 3);
+    margin: 2px;
+    overflow: hidden;
+    align-items: center;
+    font-weight: bolder;
+    font-family: sans-serif;
+}
+h1:hover{
+    background:linear-gradient(45deg,purple,blue);
+    color: rgb(141, 197, 9);
+}
+.container{
+    height: 70vh;
+display: flex;
+justify-content: center;
+align-items:center;
+    
+}
+.game{
+    height:60vmin;;
+    width:60vmin;
+display: flex;
+flex-wrap: wrap;
+justify-content: center;
+align-items: center;
+gap: 1.5vmin;}
+.box{
+    height: 18vmin;
+    width: 18vmin;
+    /* box-shadow: white 0 0 20px 2px; */
+    border-radius: 1rem;
+    border: none;
+    box-shadow: 0 0 1rem rgba(255, 254, 254, 0.3);
+    font-size: 8vmin;
+    background: linear-gradient(45deg,red,green,blue,gray);
+    color: rgb(210, 207, 207);
+    font-weight:bolder ;
+}
+.box:hover{
+    background: linear-gradient(45deg,rgb(117, 72, 72),rgb(108, 79, 19), rgb(74, 55, 55));
+}
+ #reset-btn{
+
+position: relative;
+z-index: 1;
+box-shadow: white 0 0 20px 2px;
+    padding: 1rem;
+    font-size: 1.25rem;
+    background:linear-gradient(45deg,midnightblue,rgb(27, 105, 105),rgb(1, 67, 93));
+    color: white;
+    border-radius: 12px;
+    border: none;
+    font-weight:bolder;
+}
+#reset-btn:hover{
+    background: linear-gradient(45deg,orange,white,green);
+    color: rgb(65, 27, 97);
+}
+/* #reset-btn::after{
+    content: "";
+    z-index: -1;
+    position: absolute;
+   background:linear-gradient(45deg,orange,white,green);
+   /* width: 100%;
+    height:100%; */
+    /* top: 3px;
+    left: 3px;
+    border-radius: 16px;
+} */ 
+/* #reset-btn::before{
+    content: "";
+    background:linear-gradient(45deg,lime,magenta,cyan,#fff000,#ff3700);
+    position: absolute;
+    top:-2px;
+    left:-2px;
+    background-size:200%;
+    z-index: -1;
+    width: calc(100% + 6px);
+height: calc(100% + 6px);
+filter: blur(8px);
+animation: glowing 20s linear infinite ;
+transition:opacity 0.2s ease-in-out;
+border-radius:24px;
+opacity: 0;
+}
+  @keyframes glowing{
+        0%{background-position: 0 50%;}
+        50%{background-position: 100% 50%;}
+        100%{background-position: 0 50%;}
+
+    } */
+    /*hover*/
+    /* #button:hover::before{
+opacity: 1;
+    transform: scale(1.1);
+    }
+    button:active:before{
+    opacity: 1;
+}
+#button:active::after{
+    transform: scale(.95);
+    background: transparent;
+}
+#button:active{
+    color: #000;
+    font-weight: bold;
+}  */
+
+#new-btn{
+    padding: 1rem;
+    font-size: 1.25rem;
+    background-color: #191913;
+    color: white;
+    border-radius: 1rem;
+    border: none;
+    
+}
+#new-btn:hover{
+background: linear-gradient(45deg,blue,green,brown);
+color:greenyellow;
+}
+.msg{
+    color: yellow;
+    font-size: 5vmin;
+    /* color: white; */
+}
+.msg-container{
+height: 100vmin;
+color: white;
+display: flex;
+justify-content: center;
+align-items: center;
+flex-direction: column;
+font-weight: bolder;
+font-size: larger;
+font-family: sans-serif;
+gap:4rem;
+
+}
+.hide{
+    display: none;
+}
+.overplay{
+    position:fixed;
+    top: 0;
+    left: 0;
+    min-width: 100%;
+    min-height: 100%;
+    z-index: -1;
+    object-fit:cover;
+    
+}
+
+</style>
+<body>
+<div class="overplay">
+    <video autoplay muted loop id = "bg-video" >
+        <source src="samurai.mp4" type="video/mp4">
+    </video>
+</div>
+    <div class="msg-container hide">
+        <p id="msg">winner</p>
+        <button id="new-btn">New Game</button>
+    </div>
+    <img src="" alt="">
+    <main>
+    <h1>TIC-TAC-TOE GAME</h1>
+    <div class="container">
+    <div class="game">
+    <button class="box"></button>
+    <button class="box"></button>
+    <button class="box"></button>
+    <button class="box"></button>
+    <button class="box"></button>
+    <button class="box"></button>
+    <button class="box"></button>
+    <button class="box"></button>
+    <button class="box"></button>
+    
+</div>
+</div>
+<button id="reset-btn">Reset Game</button>
+    </main>
+    <script>
+let boxes = document.querySelectorAll(".box");
+let resetBtn = document.querySelector("#reset-btn");
+let newGameBtn = document.querySelector("#new-btn");
+let msgcontainer = document.querySelector(".msg-container");
+let msg = document.querySelector("#msg");
+
+let turnO = true; //playerX, playerO
+const winPatterns = [
+    [0,1,2],
+    [0,3,6],
+    [0,4,8],
+    [1,4,7],
+    [2,5,8],
+    [2,4,6],
+    [3,4,5],
+    [6,7,8],
+];
+const resetGame = () => {
+    turnO =true;
+    enableBoxes();
+    msgcontainer.classList.add("hide");
+};
+boxes.forEach((box) => {
+box.addEventListener("click",() => {
+console.log("box was clicked");
+if(turnO === true){//player O turn
+box.textContent = "O";
+turnO = false;
+}else{//player X turn 
+    box.textContent = "X";
+    turnO = true;
+}
+box.disabled = true;
+checkWinner();
+});
+});
+const disabledBoxes = () =>{
+    for(let box of boxes){
+        box.disabled = true;
+    }
+}
+const enableBoxes = () =>{
+    for (let box of boxes){
+        box.disabled = false;
+        box.innerText = "";
+    }
+}
+const showWinner = (winner) => {
+    msg.innerText = 'Congratulation you winning the game 👌${winner}🦁💪';
+    msgcontainer.classList.remove("hide");
+    disabledBoxes();
+}
+const checkWinner = () => {
+    for(pattern of winPatterns){
+        let pos1Val = boxes[pattern[0]].innerText;
+        let pos2Val = boxes[pattern[1]].innerText;
+        let pos3Val = boxes[pattern[2]].innerText;
+
+        if(pos1Val != "" && pos2Val != "" && pos3Val != ""){
+            if (pos1Val === pos2Val && pos2Val === pos3Val){
+                console.log("winner",pos1Val);
+                showWinner(pos1Val);
+            }
+        }
+    }
+};
+//ai fuction
+function aiMove(){
+    let emtyCells = [];
+
+    for(let i =0; i< 9; i++){
+        if (board[i] === ""){
+      eemtyCells.push(i);
+        }
+    }
+    if (emtyCells.length === 0)return;
+    let randowIndex =
+    emtyCells[Math.floor(Math.random()* emtyCells.length)];
+    board[randomIndex]= "0";
+    boxes[randomIndex].innerText = "0";
+    boxes[randowIndex].disabled = true;
+
+    checkWinner();
+
+    // setTimeout(aiMove,500);
+}
+// next work
+
+newGameBtn.addEventListener("click", resetGame);
+resetBtn.addEventListener("click", resetGame);
+
+</script>
+</body>
+</html>
