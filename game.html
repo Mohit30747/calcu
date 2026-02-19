@@ -169,6 +169,34 @@ gap:4rem;
     object-fit:cover;
     
 }
+.Ai{
+    padding: 0.5rem;
+font-size: large;
+background: linear-gradient(45deg,red,gray);
+color: white;
+border-radius: 10px;
+/* display: flex; */
+align-items: center;
+justify-content: center;
+text-align: center;
+/* position: absolute; */
+/* position: relative; */
+}
+.Two{
+    padding: 0.5rem;
+    font-size: large;
+    background: linear-gradient(45deg,lime,gray);
+    justify-content: center;
+    color: whitesmoke;
+    border-radius: 10px;
+    /* display: flex; */
+    align-items: center;
+    margin-right: 1rem;
+    margin-top: 20px;
+    text-align: center;
+}
+.Two:hover{ background: linear-gradient(45deg,orange,brown); color: rgb(65, 27, 97); } .Ai:hover{background:linear-gradient( 90deg, aqua,palevioletred); color:rgb(65, 27, 97) ;}
+
 
 </style>
 <body>
@@ -199,7 +227,12 @@ gap:4rem;
 </div>
 </div>
 <button id="reset-btn">Reset Game</button>
-    </main>
+<div>
+    <button class="Two" id="two-player-btn">Two Player</button>
+<button class="Ai" id="ai-btn">Play AI</button>
+
+</div>
+    <!-- </main> -->
     <script>
 let boxes = document.querySelectorAll(".box");
 let resetBtn = document.querySelector("#reset-btn");
@@ -207,6 +240,7 @@ let newGameBtn = document.querySelector("#new-btn");
 let msgcontainer = document.querySelector(".msg-container");
 let msg = document.querySelector("#msg");
 
+// let gameMode = "two-player"; // default mode
 let turnO = true; //playerX, playerO
 const winPatterns = [
     [0,1,2],
@@ -223,20 +257,65 @@ const resetGame = () => {
     enableBoxes();
     msgcontainer.classList.add("hide");
 };
+//////button of ai or player//
+let gameMode = "two-player"; // default mode
+
+document.querySelector("#two-player-btn").addEventListener("click", () => {
+    gameMode = "two-player";
+    resetGame();
+});
+
+document.querySelector("#ai-btn").addEventListener("click", () => {
+    gameMode = "ai";
+    resetGame();
+});
+
+///////////old work
+// boxes.forEach((box) => {
+// box.addEventListener("click",() => {
+// console.log("box was clicked");
+// if(turnO === true){//player O turn
+// box.textContent = "O";
+// turnO = false;
+// }else{//player X turn 
+//     box.textContent = "X";
+//     turnO = true;
+// }
+// box.disabled = true;
+// checkWinner();
+// setTimeout(aiMove,500);
+// });
+// });
+/////ai work
 boxes.forEach((box) => {
-box.addEventListener("click",() => {
-console.log("box was clicked");
-if(turnO === true){//player O turn
-box.textContent = "O";
-turnO = false;
-}else{//player X turn 
-    box.textContent = "X";
-    turnO = true;
-}
-box.disabled = true;
-checkWinner();
+    box.addEventListener("click", () => {
+        if(box.innerText !== "") return;
+
+        if(gameMode === "two-player") {
+            if(turnO){
+                box.innerText = "O";
+                turnO = false;
+            } else {
+                box.innerText = "X";
+                turnO = true;
+            }
+            box.disabled = true;
+            checkWinner();
+        } else if(gameMode === "ai") {
+            box.innerText = "O";
+            box.disabled = true;
+            checkWinner();
+
+            setTimeout(() => {
+                aiMove();
+                checkWinner();
+            }, 500);
+        }
+    });
 });
-});
+
+
+/////next//
 const disabledBoxes = () =>{
     for(let box of boxes){
         box.disabled = true;
@@ -268,26 +347,44 @@ const checkWinner = () => {
     }
 };
 //ai fuction
-function aiMove(){
-    let emtyCells = [];
+// function aiMove(){
+//     let emtyCells = [];
 
-    for(let i =0; i< 9; i++){
-        if (board[i] === ""){
-      eemtyCells.push(i);
-        }
-    }
-    if (emtyCells.length === 0)return;
-    let randowIndex =
-    emtyCells[Math.floor(Math.random()* emtyCells.length)];
-    board[randomIndex]= "0";
-    boxes[randomIndex].innerText = "0";
-    boxes[randowIndex].disabled = true;
+//     for(let i =0; i< 9; i++){
+//         if (board[i] === ""){
+//       eemtyCells.push(i);
+//         }
+//     }
+    // if (emtyCells.length === 0)return;
+    // let randowIndex =
+    // emtyCells[Math.floor(Math.random()* emtyCells.length)];
+    // board[randomIndex]= "0";
+    // boxes[randomIndex].innerText = "0";
+    // boxes[randowIndex].disabled = true;
 
-    checkWinner();
+    // checkWinner();
 
     // setTimeout(aiMove,500);
-}
+// }
 // next work
+//////
+////AI MOVE FUCTION////
+function aiMove(){
+   let emptyCells = [];
+
+   boxes.forEach((box,index)=>{
+if (box.innerText === ""){
+    emptyCells.push(index);
+}
+   }) ;
+   
+   if (emptyCells.length === 0)return;
+   let randomIndex = emptyCells[Math.floor(Math.random()* emptyCells.length)];
+   boxes[randomIndex].innerText = "X";
+   boxes[randomIndex].disabled = true; checkWinner();
+
+}
+
 
 newGameBtn.addEventListener("click", resetGame);
 resetBtn.addEventListener("click", resetGame);
